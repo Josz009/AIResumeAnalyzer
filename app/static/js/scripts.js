@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault(); // Prevent default form submission
 
         const fileInput = document.querySelector("#resume");
-        const jobDescription = document.querySelector("#jobDescription").value;
+        const jobDescription = document.querySelector("#job_description").value;
 
         // Validate file format
         if (!fileInput.value.endsWith(".pdf") && !fileInput.value.endsWith(".docx")) {
