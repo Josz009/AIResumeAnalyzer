@@ -1,0 +1,11 @@
+
+{% extends "base.html" %}
+{% block content %}
+<form action="/" method="POST" enctype="multipart/form-data">
+    <label for="resume">Upload Resume:</label>
+    <input type="file" id="resume" name="resume" required>
+    <label for="job_description">Job Description:</label>
+    <textarea id="job_description" name="job_description" required></textarea>
+    <button type="submit">Analyze</button>
+</form>
+{% endblock %}

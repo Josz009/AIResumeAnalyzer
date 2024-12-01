@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>ATS Results</h2>
+
+<!-- Keyword Score -->
+<p><strong>Keyword Score:</strong> {{ ats_score.keyword_score }}%</p>
+
+<!-- Readability Score -->
+<p><strong>Readability Score:</strong> {{ ats_score.readability_score }}</p>
+
+<!-- Missing Skills -->
+<h3>Missing Skills</h3>
+{% if ats_score.missing_skills %}
+    <ul>
+        {% for skill in ats_score.missing_skills %}
+            <li>{{ skill }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>All skills from the job description are present in your resume!</p>
+{% endif %}
+
+<!-- Recommendations -->
+<h3>Recommendations</h3>
+<p>Here are some ways to improve your resume:</p>
+<ul>
+    <li>Include the missing skills listed above (if applicable).</li>
+    <li>Ensure your resume is structured and formatted for easy readability.</li>
+    <li>Use concise bullet points to describe your experience and skills.</li>
+</ul>
+
+<!-- Visualization (Chart.js Example) -->
+<h3>Visual Overview</h3>
+<canvas id="keywordChart" width="400" height="200"></canvas>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('keywordChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Matched Keywords', 'Missing Keywords'],
+                datasets: [{
+                    data: [
+                        {{ ats_score.keyword_score }},
+                        100 - {{ ats_score.keyword_score }}
+                    ],
+                    backgroundColor: ['#4CAF50', '#FF5733']
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
