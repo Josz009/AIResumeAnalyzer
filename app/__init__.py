@@ -1,15 +1,15 @@
 from flask import Flask
 from flask_pymongo import PyMongo
 from flask_cors import CORS
-import os
 
 # Initialize Flask app
 app = Flask(__name__)
 
-# Load configurations from environment variables
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "default_secret_key")
-app.config["MONGO_URI"] = os.getenv("DATABASE_URL")
+# Flask configurations
+app.config["SECRET_KEY"] = "2ba00670e71b1938dca8df9b7ac91c28c694941a56d4bef8"
+app.config["MONGO_URI"] = "mongodb+srv://josestrada87:Carlos09@healthandwelness.fxsekx1.mongodb.net/AIResumeBuilder?retryWrites=true&w=majority"
 
+# Enable CORS
 CORS(app, origins=["https://airesumeanalyzerfrontend.onrender.com"])
 
 # Initialize MongoDB connection
