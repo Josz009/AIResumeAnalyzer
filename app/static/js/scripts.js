@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         try {
             // Send data to the backend
-            const response = await fetch("https://airesumeanalyzerbackend.onrender.com/process", {
+            const response = await fetch("https://airesumeanalyzer.onrender.com", {
                 method: "POST",
                 body: formData,
             });
