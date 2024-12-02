@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");
     form.addEventListener("submit", async function (event) {
@@ -12,18 +11,23 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Please upload a valid .pdf or .docx file.");
             return;
         }
-        const backendUrl = "https://airesumeanalyzer.onrender.com";
 
-
+        const backendUrl = "https://airesumeanalyzer.onrender.com/process"; // Corrected endpoint
 
         // Prepare form data
         const formData = new FormData();
         formData.append("resume", fileInput.files[0]);
         formData.append("jobDescription", jobDescription);
 
+        // Debugging: Log form data
+        console.log("Form Data:", {
+            resume: fileInput.files[0],
+            jobDescription: jobDescription,
+        });
+
         try {
             // Send data to the backend
-            const response = await fetch("https://airesumeanalyzer.onrender.com", {
+            const response = await fetch(backendUrl, {
                 method: "POST",
                 body: formData,
             });
@@ -32,10 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 const result = await response.json();
                 alert(`Analysis Complete! ATS Score: ${result.atsScore}`);
             } else {
-                alert("Error: Unable to process the file.");
+                const errorText = await response.text();
+                console.error("Response Error:", errorText);
+                alert("Error: Unable to process the file. Check the backend for details.");
             }
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Fetch Error:", error);
             alert("Error: Could not connect to the server.");
         }
     });
