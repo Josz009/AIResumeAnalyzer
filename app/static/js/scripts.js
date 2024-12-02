@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("Please upload a valid .pdf or .docx file.");
             return;
         }
-        const backendUrl = "https://airesumeanalyzerbackend.onrender.com";
+        const backendUrl = "https://airesumeanalyzer.onrender.com";
+
 
 
         // Prepare form data
