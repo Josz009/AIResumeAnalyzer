@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");
-    const feedbackDiv = document.getElementById("feedback"); // Add a feedback element in your HTML
+    const feedbackDiv = document.getElementById("feedback");
 
     form.addEventListener("submit", async function (event) {
         event.preventDefault(); // Prevent default form submission
@@ -8,8 +8,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const fileInput = document.querySelector("#resume");
         const jobDescription = document.querySelector("#job_description").value.trim();
         const allowedExtensions = ["pdf", "docx"];
-        const backendUrl = "/process"; // Relative path
-
 
         // Clear previous feedback
         feedbackDiv.innerHTML = "";
@@ -39,8 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Prepare form data
         const formData = new FormData();
-        formData.append("resume", file);
-        formData.append("jobDescription", jobDescription);
+        formData.append("resume", file); // Key matches backend
+        formData.append("job_description", jobDescription); // Key matches backend
 
         try {
             // Send data to the backend
@@ -53,9 +51,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const result = await response.json();
                 displayFeedback(`Analysis Complete! ATS Score: ${result.atsScore}`, "success");
             } else {
-                const errorText = await response.text();
-                console.error("Response Error:", errorText);
-                displayFeedback("Error: Unable to process the file. Check the backend for details.", "error");
+                const error = await response.json();
+                displayFeedback(`Error: ${error.error}`, "error");
             }
         } catch (error) {
             console.error("Fetch Error:", error);
