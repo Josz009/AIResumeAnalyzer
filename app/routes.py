@@ -44,9 +44,13 @@ def process_file():
         print("Request files:", request.files)
 
         # Validate input
-        if "resume" not in request.files or "job_description" not in request.form:
-            print("Validation failed: Missing resume or job description.")
-            return jsonify({"error": "Invalid input"}), 400
+        if "resume" not in request.files or not request.files["resume"].filename:
+            print("Validation failed: Missing or invalid resume file.")
+            return jsonify({"error": "Missing or invalid resume file."}), 400
+
+        if "job_description" not in request.form or not request.form["job_description"].strip():
+            print("Validation failed: Missing or invalid job description.")
+            return jsonify({"error": "Missing or invalid job description."}), 400
 
         # Access uploaded file and job description
         resume_file = request.files["resume"]
@@ -76,3 +80,4 @@ def process_file():
     except Exception as e:
         print(f"Error during processing in /process route: {e}")
         return jsonify({"error": "Internal server error"}), 500
+
