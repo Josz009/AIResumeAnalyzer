@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const fileInput = document.querySelector("#resume");
         const jobDescription = document.querySelector("#job_description").value.trim();
         const allowedExtensions = ["pdf", "docx"];
-        const backendUrl = "https://airesumeanalyzer.onrender.com/process"; // Corrected endpoint
+        const backendUrl = "/process"; // Relative path
+
 
         // Clear previous feedback
         feedbackDiv.innerHTML = "";
