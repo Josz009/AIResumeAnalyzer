@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         try {
             // Send data to the backend
-            const response = await fetch(backendUrl, {
+            const response = await fetch("/process", {
                 method: "POST",
                 body: formData,
             });
