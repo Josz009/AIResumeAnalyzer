@@ -1,29 +1,45 @@
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");
+    const feedbackDiv = document.getElementById("feedback"); // Add a feedback element in your HTML
+
     form.addEventListener("submit", async function (event) {
         event.preventDefault(); // Prevent default form submission
 
         const fileInput = document.querySelector("#resume");
-        const jobDescription = document.querySelector("#job_description").value;
+        const jobDescription = document.querySelector("#job_description").value.trim();
+        const allowedExtensions = ["pdf", "docx"];
+        const backendUrl = "https://airesumeanalyzer.onrender.com/process"; // Corrected endpoint
 
-        // Validate file format
-        if (!fileInput.value.endsWith(".pdf") && !fileInput.value.endsWith(".docx")) {
-            alert("Please upload a valid .pdf or .docx file.");
+        // Clear previous feedback
+        feedbackDiv.innerHTML = "";
+        feedbackDiv.className = "";
+
+        // Validate file
+        const file = fileInput.files[0];
+        if (!file) {
+            displayFeedback("Please upload a resume file.", "error");
             return;
         }
 
-        const backendUrl = "https://airesumeanalyzer.onrender.com/process"; // Corrected endpoint
+        const fileExtension = file.name.split(".").pop().toLowerCase();
+        if (!allowedExtensions.includes(fileExtension)) {
+            displayFeedback("Unsupported file format. Please upload a PDF or DOCX file.", "error");
+            return;
+        }
+
+        // Validate job description
+        if (!jobDescription) {
+            displayFeedback("Please enter a job description.", "error");
+            return;
+        }
+
+        // Show loading indicator
+        displayFeedback("Processing your resume, please wait...", "info");
 
         // Prepare form data
         const formData = new FormData();
-        formData.append("resume", fileInput.files[0]);
+        formData.append("resume", file);
         formData.append("jobDescription", jobDescription);
-
-        // Debugging: Log form data
-        console.log("Form Data:", {
-            resume: fileInput.files[0],
-            jobDescription: jobDescription,
-        });
 
         try {
             // Send data to the backend
@@ -34,15 +50,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.ok) {
                 const result = await response.json();
-                alert(`Analysis Complete! ATS Score: ${result.atsScore}`);
+                displayFeedback(`Analysis Complete! ATS Score: ${result.atsScore}`, "success");
             } else {
                 const errorText = await response.text();
                 console.error("Response Error:", errorText);
-                alert("Error: Unable to process the file. Check the backend for details.");
+                displayFeedback("Error: Unable to process the file. Check the backend for details.", "error");
             }
         } catch (error) {
             console.error("Fetch Error:", error);
-            alert("Error: Could not connect to the server.");
+            displayFeedback("Error: Could not connect to the server.", "error");
         }
     });
+
+    function displayFeedback(message, type) {
+        feedbackDiv.textContent = message;
+        feedbackDiv.className = `feedback ${type}`;
+    }
 });
+
