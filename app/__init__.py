@@ -10,7 +10,11 @@ app.config["SECRET_KEY"] = "2ba00670e71b1938dca8df9b7ac91c28c694941a56d4bef8"
 app.config["MONGO_URI"] = "mongodb+srv://josestrada87:Carlos09@healthandwelness.fxsekx1.mongodb.net/AIResumeBuilder?retryWrites=true&w=majority"
 
 # Enable CORS
-CORS(app, origins=["https://airesumeanalyzer.onrender.com"])
+CORS(app, origins=[
+    "https://airesumeanalyzer.onrender.com", 
+    "http://localhost:5000"
+], supports_credentials=True)
+
 
 # Initialize MongoDB connection
 mongo = PyMongo(app)
