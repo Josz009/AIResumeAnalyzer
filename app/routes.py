@@ -24,14 +24,24 @@ def index():
             resume_text = parse_resume(resume_file)
             ats_score = calculate_ats_score(resume_text, job_description)
 
+            # Generate recommendations based on ATS score
+            recommendations = []
+            if ats_score.get("keyword_score", 0) < 50:
+                recommendations.append("Improve the keyword matching by including more relevant skills.")
+            if ats_score.get("readability_score", 0) < 2:
+                recommendations.append("Make your resume more readable by simplifying language.")
+            if ats_score.get("missing_skills", []):
+                recommendations.append(f"Consider adding these missing skills: {', '.join(ats_score['missing_skills'])}.")
+
             # Save results to MongoDB
             mongo.db.results.insert_one({
                 "resume_text": resume_text,
                 "job_description": job_description,
-                "ats_score": ats_score
+                "ats_score": ats_score,
+                "recommendations": recommendations
             })
 
-            return render_template("result.html", ats_score=ats_score)
+            return render_template("result.html", ats_score=ats_score, recommendations=recommendations)
         return render_template("index.html")
     except Exception as e:
         print(f"Error during processing in index route: {e}")
@@ -70,23 +80,35 @@ def process_file():
         resume_text = parse_resume(resume_file)
         ats_score = calculate_ats_score(resume_text, job_description)
 
+        # Generate recommendations
+        recommendations = []
+        if ats_score.get("keyword_score", 0) < 50:
+            recommendations.append("Improve the keyword matching by including more relevant skills.")
+        if ats_score.get("readability_score", 0) < 2:
+            recommendations.append("Make your resume more readable by simplifying language.")
+        if ats_score.get("missing_skills", []):
+            recommendations.append(f"Consider adding these missing skills: {', '.join(ats_score['missing_skills'])}.")
+
         # Log processing results
         print(f"Processed resume text: {resume_text[:100]}")  # Log only first 100 chars
         print(f"Calculated ATS score: {ats_score}")
+        print(f"Recommendations: {recommendations}")
 
         # Save results to MongoDB
         mongo.db.results.insert_one({
             "resume_text": resume_text,
             "job_description": job_description,
-            "ats_score": ats_score
+            "ats_score": ats_score,
+            "recommendations": recommendations
         })
 
-        # Return JSON response with detailed ATS score and additional metrics
+        # Return JSON response with detailed ATS score, metrics, and recommendations
         return jsonify({
-            "atsScore": ats_score.get("keyword_score", 0),  # Extract score safely
+            "atsScore": ats_score.get("keyword_score", 0),
             "readabilityScore": ats_score.get("readability_score", 0),
             "matchingSkills": ats_score.get("matching_skills", []),
-            "missingSkills": ats_score.get("missing_skills", [])
+            "missingSkills": ats_score.get("missing_skills", []),
+            "recommendations": recommendations
         })
     except Exception as e:
         print(f"Error during processing in /process route: {e}")
