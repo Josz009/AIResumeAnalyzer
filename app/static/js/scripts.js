@@ -50,11 +50,12 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 const result = await response.json();
 
-                // Display ATS score and additional metrics
+                // Extract data
                 const atsScore = result.atsScore || 0;
                 const readabilityScore = result.readabilityScore || 0;
                 const matchingSkills = result.matchingSkills || [];
                 const missingSkills = result.missingSkills || [];
+                const recommendations = result.recommendations || [];
 
                 // Build detailed feedback message
                 const feedbackMessage = `
@@ -62,7 +63,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     <strong>ATS Score:</strong> ${atsScore}<br>
                     <strong>Readability Score:</strong> ${readabilityScore}<br>
                     <strong>Matching Skills:</strong> ${matchingSkills.join(", ") || "None"}<br>
-                    <strong>Missing Skills:</strong> ${missingSkills.join(", ") || "None"}
+                    <strong>Missing Skills:</strong> ${missingSkills.join(", ") || "None"}<br>
+                    <strong>Recommendations:</strong><br>
+                    <ul>
+                        ${recommendations.map(rec => `<li>${rec}</li>`).join("")}
+                    </ul>
                 `;
                 displayFeedback(feedbackMessage, "success");
             } else {
