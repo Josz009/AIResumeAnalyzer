@@ -49,7 +49,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (response.ok) {
                 const result = await response.json();
-                displayFeedback(`Analysis Complete! ATS Score: ${result.atsScore}`, "success");
+
+                // Display ATS score and additional metrics
+                const atsScore = result.atsScore || 0;
+                const readabilityScore = result.readabilityScore || 0;
+                const matchingSkills = result.matchingSkills || [];
+                const missingSkills = result.missingSkills || [];
+
+                // Build detailed feedback message
+                const feedbackMessage = `
+                    <strong>Analysis Complete!</strong><br>
+                    <strong>ATS Score:</strong> ${atsScore}<br>
+                    <strong>Readability Score:</strong> ${readabilityScore}<br>
+                    <strong>Matching Skills:</strong> ${matchingSkills.join(", ") || "None"}<br>
+                    <strong>Missing Skills:</strong> ${missingSkills.join(", ") || "None"}
+                `;
+                displayFeedback(feedbackMessage, "success");
             } else {
                 const error = await response.json();
                 displayFeedback(`Error: ${error.error}`, "error");
@@ -61,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function displayFeedback(message, type) {
-        feedbackDiv.textContent = message;
+        feedbackDiv.innerHTML = message; // Support HTML for detailed feedback
         feedbackDiv.className = `feedback ${type}`;
     }
 });
