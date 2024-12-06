@@ -15,7 +15,10 @@ def index():
             # Validate input
             if not resume_file or not job_description:
                 print(f"Validation failed: resume_file={resume_file}, job_description={job_description}")
-                return render_template("index.html", error="Please provide both a resume file and a job description."), 400
+                return render_template(
+                    "index.html", 
+                    error="Please provide both a resume file and a job description."
+                ), 400
 
             # Process resume and calculate ATS score
             resume_text = parse_resume(resume_file)
@@ -32,7 +35,10 @@ def index():
         return render_template("index.html")
     except Exception as e:
         print(f"Error during processing in index route: {e}")
-        return render_template("error.html", message="An unexpected error occurred. Please try again later."), 500
+        return render_template(
+            "error.html", 
+            message="An unexpected error occurred. Please try again later."
+        ), 500
 
 
 # "/process" API endpoint
@@ -75,9 +81,13 @@ def process_file():
             "ats_score": ats_score
         })
 
-        # Return JSON response
-        return jsonify({"atsScore": ats_score})
+        # Return JSON response with detailed ATS score and additional metrics
+        return jsonify({
+            "atsScore": ats_score.get("keyword_score", 0),  # Extract score safely
+            "readabilityScore": ats_score.get("readability_score", 0),
+            "matchingSkills": ats_score.get("matching_skills", []),
+            "missingSkills": ats_score.get("missing_skills", [])
+        })
     except Exception as e:
         print(f"Error during processing in /process route: {e}")
         return jsonify({"error": "Internal server error"}), 500
-
